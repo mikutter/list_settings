@@ -2,7 +2,7 @@
 
 require_relative 'tab'
 
-require 'gtk2'
+require 'gtk3'
 
 Plugin.create :list_settings do
   this = self
