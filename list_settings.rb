@@ -8,7 +8,7 @@ Plugin.create :list_settings do
   this = self
 
   settings _("リスト") do
-    pack_start(this.setting_container, true)
+    add(this.setting_container)
   end
 
   # 設定のGtkウィジェット
