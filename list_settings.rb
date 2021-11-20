@@ -2,13 +2,13 @@
 
 require_relative 'tab'
 
-require 'gtk2'
+require 'gtk3'
 
 Plugin.create :list_settings do
   this = self
 
   settings _("リスト") do
-    pack_start(this.setting_container, true)
+    add(this.setting_container)
   end
 
   # 設定のGtkウィジェット
@@ -21,7 +21,7 @@ Plugin.create :list_settings do
       iter[Plugin::ListSettings::Tab::NAME] = list[:name]
       iter[Plugin::ListSettings::Tab::DESCRIPTION] = list[:description]
       iter[Plugin::ListSettings::Tab::PUBLICITY] = list[:mode] }
-    Gtk::HBox.new.add(tab).closeup(tab.buttons(Gtk::VBox)).show_all end
+    Gtk::Box.new(:horizontal).add(tab).pack_start(tab.buttons(Gtk::Box), expand: false).show_all end
 
   # フォローしているリストを返す
   def available_lists

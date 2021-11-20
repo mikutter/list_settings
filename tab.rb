@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-require 'gtk2'
+require 'gtk3'
 require_relative 'listlist'
 
 # 設定画面のCRUD
@@ -30,7 +30,7 @@ module Plugin::ListSettings
     end
 
     def buttons(box_klass)
-      box_klass.new(false, 4).closeup(create_button).closeup(update_button).closeup(delete_button).closeup(extract_button) end
+      box_klass.new(:vertical, 4).pack_start(create_button, expand: false).pack_start(update_button, expand: false).pack_start(delete_button, extract: false).pack_start(extract_button, expand: false) end
 
     def menu_pop(widget, event)
       _p = Plugin[:list_settings]
@@ -43,7 +43,7 @@ module Plugin::ListSettings
 
     def extract_button
       if not defined? @extract_button
-        @extract_button = Gtk::Button.new(Plugin[:list_settings]._("タブを作成"))
+        @extract_button = Gtk::Button.new(label: Plugin[:list_settings]._("タブを作成"))
         @extract_button.ssc(:clicked) {
           record_extract(nil, nil) } end
       @extract_button end
@@ -107,8 +107,8 @@ module Plugin::ListSettings
         prompt = Gtk::Entry.new
         prompt.text = list[:name]
         dialog.vbox.
-          add(Gtk::HBox.new(false, 8).
-               closeup(Gtk::Label.new(Plugin[:list_settings]._("タブの名前"))).
+          add(Gtk::Box.new(:horizontal, 8).
+               pack_start(Gtk::Label.new(Plugin[:list_settings]._("タブの名前")), expand: false).
                add(prompt).show_all)
         dialog.run{ |response|
           if Gtk::Dialog::RESPONSE_ACCEPT == response
