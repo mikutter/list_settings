@@ -112,14 +112,20 @@ module Plugin::ListSettings
           add(Gtk::Box.new(:horizontal, 8).
                pack_start(Gtk::Label.new(Plugin[:list_settings]._("タブの名前")), expand: false).
                add(prompt).show_all)
-        dialog.run{ |response|
-          if Gtk::Dialog::RESPONSE_ACCEPT == response
+        dialog.signal_connect("response"){ |widget, response|
+          if response == Gtk::ResponseType::OK
             Plugin.call :extract_tab_create,
                         name: prompt.text,
                         icon: Skin.get_path('list.png'),
                         sources: [:"#{list.user.idname}_list_#{list[:id]}"] end
           dialog.destroy
-          prompt = dialog = nil } end
+          prompt = dialog = nil
+        }
+        dialog.signal_connect("destroy") {
+          false
+        }
+        dialog.show_all
+      end
     end
 
   end
