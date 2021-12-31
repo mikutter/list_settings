@@ -49,7 +49,7 @@ module Plugin::ListSettings
       @extract_button end
 
     def record_extract(optional, widget)
-      self.selection.selected_each {|model, path, iter|
+      self.selection.each {|model, path, iter|
         on_extract(iter) } end
 
     def on_created(iter)
@@ -98,26 +98,34 @@ module Plugin::ListSettings
     def on_extract(iter)
       list = iter[LIST]
       if list
-        dialog = Gtk::Dialog.new(Plugin[:list_settings]._("リスト「%{list_name}」の抽出タブを作成 - %{mikutter}") % {
+        dialog = Gtk::Dialog.new(title: Plugin[:list_settings]._("リスト「%{list_name}」の抽出タブを作成 - %{mikutter}") % {
                                    mikutter: Environment::NAME,
                                    list_name: list[:name]
-                                 }, nil, nil,
-                                 [Gtk::Stock::OK, Gtk::Dialog::RESPONSE_ACCEPT],
-                                 [Gtk::Stock::CANCEL, Gtk::Dialog::RESPONSE_REJECT])
+                                 },
+                                 buttons: [
+                                   [Gtk::Stock::OK, Gtk::ResponseType::OK],
+                                   [Gtk::Stock::CANCEL, Gtk::ResponseType::CANCEL]
+                                 ])
         prompt = Gtk::Entry.new
         prompt.text = list[:name]
-        dialog.vbox.
+        dialog.child.
           add(Gtk::Box.new(:horizontal, 8).
                pack_start(Gtk::Label.new(Plugin[:list_settings]._("タブの名前")), expand: false).
                add(prompt).show_all)
-        dialog.run{ |response|
-          if Gtk::Dialog::RESPONSE_ACCEPT == response
+        dialog.signal_connect("response"){ |widget, response|
+          if response == Gtk::ResponseType::OK
             Plugin.call :extract_tab_create,
                         name: prompt.text,
                         icon: Skin.get_path('list.png'),
                         sources: [:"#{list.user.idname}_list_#{list[:id]}"] end
           dialog.destroy
-          prompt = dialog = nil } end
+          prompt = dialog = nil
+        }
+        dialog.signal_connect("destroy") {
+          false
+        }
+        dialog.show_all
+      end
     end
 
   end

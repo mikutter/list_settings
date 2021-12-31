@@ -14,6 +14,8 @@ Plugin.create :list_settings do
   # 設定のGtkウィジェット
   def setting_container
     tab = Plugin::ListSettings::Tab.new(self)
+    tab.hexpand = true
+    tab.vexpand = true
     available_lists.each{ |list|
       iter = tab.model.append
       iter[Plugin::ListSettings::Tab::SLUG] = list[:full_name]
