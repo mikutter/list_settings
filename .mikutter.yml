@@ -9,7 +9,7 @@ depends:
   - gtk3
   - uitranslator
   - skin
-version: '2.0'
+version: '2.1'
 author: toshi_a
 name: リスト設定
 description: リストの管理機能を提供し、設定画面から追加・削除・変更をできるようにします
